@@ -1,6 +1,12 @@
 import { test, expect } from '@playwright/test';
 
-test('has title', async ({ page }) => {
+
+test.describe.configure({ mode: 'serial',
+  retries: 1,
+  timeout:25000
+ });
+test('has title', async ({ page },testInfo) => {
+  console.log('what is the retry count..'+testInfo.retry);
   await page.goto('https://playwright.dev/');
 
   // Expect a title "to contain" a substring.
@@ -22,7 +28,6 @@ test('get started link', async ({ page }) => {
 
 test('test', async ({ page }) => {
   await page.goto('https://demo.automationtesting.in/Register.html',{waitUntil:'load'});
-  await page.pause();
   await page.getByPlaceholder('First Name').fill('Hanuma');
   await page.getByPlaceholder('Last Name').fill('Hanuma');
   await page.getByLabel('Male', { exact: true }).check();
