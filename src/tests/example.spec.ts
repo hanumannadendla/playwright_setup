@@ -27,11 +27,23 @@ test('get started link', async ({ page }) => {
 // npx playwright codegen  to open the codegen for recording the session
 
 test('test', async ({ page }) => {
+  test.setTimeout(400000);
   await page.goto('https://demo.automationtesting.in/Register.html',{waitUntil:'load'});
-  await page.getByPlaceholder('First Name').fill('Hanuma');
-  await page.getByPlaceholder('Last Name').fill('Hanuma');
-  await page.getByLabel('Male', { exact: true }).check();
-  await page.locator('#msdd').click();
-  await page.getByText('Arabic').click();
-  await page.getByRole('button', { name: 'Submit' }).click();
+  await page.getByPlaceholder('First Name', { exact: true }).pressSequentially("hanuma");
+  await page.getByPlaceholder('Last Name', { exact: true }).pressSequentially("nadendla");
+  await page.locator("//label[text()='Address']/following-sibling::div/textarea").pressSequentially(" this is playwright session");
+  await page. locator('input[name="radiooptions"][value="Male"]').check();
+  await page.locator('#checkbox1[value="Cricket"]').check();
+  await page.locator('#checkbox2[value="Movies"]').check();
+  const skill = page.locator("select#Skills");
+  await skill.selectOption('XHTML');
+  await page.locator('#imagesrc').setInputFiles('index.html');
+  await page.getByRole('button', { name: 'Submit' }).click({button:'left', timeout:1000});
+  
+});
+test.only('practice grap and drop', async ({ page }) => {
+  await page.goto('https://www.globalsqa.com/demo-site/draganddrop/',{waitUntil:'load'});
+  const frame = page.frameLocator("//iframe[@class ='demo-frame lazyloaded']");
+  await frame.locator('(//*[@id="gallery"]//img)[1]').dragTo(frame.locator("#trash"));
+  await page.waitForTimeout(5000);
 });
