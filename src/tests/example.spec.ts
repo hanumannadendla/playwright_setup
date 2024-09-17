@@ -1,4 +1,6 @@
-import { test, expect } from '@playwright/test';
+import { expect } from '@playwright/test';
+import test from '../utils/fixture'
+import { WelcomePageActions } from '../pageFactory/actions/WelcomePageActions';
 
 
 test.describe.configure({ mode: 'serial',
@@ -26,11 +28,11 @@ test('get started link', async ({ page }) => {
 
 // npx playwright codegen  to open the codegen for recording the session
 
-test('test', async ({ page }) => {
+test.only('test', async ({ page, welcomePageActions }) => {
   test.setTimeout(400000);
   await page.goto('https://demo.automationtesting.in/Register.html',{waitUntil:'load'});
-  await page.getByPlaceholder('First Name', { exact: true }).pressSequentially("hanuma");
-  await page.getByPlaceholder('Last Name', { exact: true }).pressSequentially("nadendla");
+  welcomePageActions.fill_firstname("hanuma");
+  welcomePageActions.fill_Lastname("hanuma");
   await page.locator("//label[text()='Address']/following-sibling::div/textarea").pressSequentially(" this is playwright session");
   await page. locator('input[name="radiooptions"][value="Male"]').check();
   await page.locator('#checkbox1[value="Cricket"]').check();
@@ -41,9 +43,10 @@ test('test', async ({ page }) => {
   await page.getByRole('button', { name: 'Submit' }).click({button:'left', timeout:1000});
   
 });
-test.only('practice grap and drop', async ({ page }) => {
+test('practice grap and drop', async ({ page }) => {
   await page.goto('https://www.globalsqa.com/demo-site/draganddrop/',{waitUntil:'load'});
   const frame = page.frameLocator("//iframe[@class ='demo-frame lazyloaded']");
   await frame.locator('(//*[@id="gallery"]//img)[1]').dragTo(frame.locator("#trash"));
-  await page.waitForTimeout(5000);
+  await page.locator('').and(page.locator(''));
+  await expect(page.getByTestId('status')).toHaveText(/first[0-9]/);
 });
