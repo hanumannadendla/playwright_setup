@@ -9,7 +9,7 @@ pipeline {
       stage('checkout') {
       steps {
           deleteDir()
-          checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: '', url: '']])
+          checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'ec8dc3bc-49a8-4851-9341-d7b5768dc661', url: 'https://github.com/hanumannadendla/playwright_setup.git']])
       }
     }
    
