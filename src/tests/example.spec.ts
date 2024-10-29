@@ -7,7 +7,7 @@ test.describe.configure({ mode: 'serial',
   retries: 1,
   timeout:25000
  });
-test('has title', async ({ page },testInfo) => {
+test('has title @welcome', async ({ page },testInfo) => {
   console.log('what is the retry count..'+testInfo.retry);
   await page.goto('https://playwright.dev/');
 
@@ -28,7 +28,7 @@ test('get started link', async ({ page }) => {
 
 // npx playwright codegen  to open the codegen for recording the session
 
-test('test', async ({ page, welcomePageActions }) => {
+test('test @login', async ({ page, welcomePageActions }) => {
   test.setTimeout(400000);
   await page.goto('https://demo.automationtesting.in/Register.html',{waitUntil:'load'});
   welcomePageActions.fill_firstname("hanuma");
@@ -43,7 +43,7 @@ test('test', async ({ page, welcomePageActions }) => {
   await page.getByRole('button', { name: 'Submit' }).click({button:'left', timeout:1000});
   
 });
-test('practice grap and drop', async ({ page }) => {
+test('practice grap and drop @login', async ({ page }) => {
   await page.goto('https://www.globalsqa.com/demo-site/draganddrop/',{waitUntil:'load'});
   const frame = page.frameLocator("//iframe[@class ='demo-frame lazyloaded']");
   await frame.locator('(//*[@id="gallery"]//img)[1]').dragTo(frame.locator("#trash"));
