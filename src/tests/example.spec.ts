@@ -28,7 +28,7 @@ test('get started link', async ({ page }) => {
 
 // npx playwright codegen  to open the codegen for recording the session
 
-test.only('test', async ({ page, welcomePageActions }) => {
+test('test', async ({ page, welcomePageActions }) => {
   test.setTimeout(400000);
   await page.goto('https://demo.automationtesting.in/Register.html',{waitUntil:'load'});
   welcomePageActions.fill_firstname("hanuma");
