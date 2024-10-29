@@ -1,41 +1,59 @@
 pipeline {
-  agent any
+    agent any
 
-//   environment {
-    
-//   }
+    parameters {
+        choice(name: 'BROWSER', choices: ['chromium', 'firefox', 'webkit','edge'], description: 'Select the browser to run the tests on.')
+        string(name: 'TEST_FILE', defaultValue: '', description: 'Specify a test file to run (leave blank to run all tests).')
+        string(name: 'tag', defaultValue: 'login', description: 'Specify a test file')
+    }
 
-  stages {
-      stage('checkout') {
-      steps {
-          deleteDir()
-          checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'ec8dc3bc-49a8-4851-9341-d7b5768dc661', url: 'https://github.com/hanumannadendla/playwright_setup.git']])
-      }
-    }
-   
-    stage('build') {
-      steps {
-        // This step trigger the test 
-        echo 'Run Playwright build Test'
-        bat '''npm install'''
-        bat '''npx playwright install'''
-      }
-    }
-    stage('run') {
-      steps {
-        // This step trigger the test 
-        echo 'Run Playwright Pipeline Test'
-        bat '''npm run test:tag'''
-        bat '''npm run generateAllureReport1'''
-      }
-    }
-    
-  }
-post {
-        always {
-          publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: false, reportDir: 'reports/allure-report', reportFiles: 'index.html', reportName: 'HTML Allure Report', reportTitles: 'Playwright', useWrapperFileDirectly: true])
-          //publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'reports/monocart/', reportFiles: 'report.html', reportName: 'Monocart HTML', reportTitles: 'Playwright', useWrapperFileDirectly: true])
-          //publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'reports/html_report', reportFiles: 'report.html', reportName: 'HTML', reportTitles: 'Playwright', useWrapperFileDirectly: true])
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout the code from the repository
+                checkout scm
+            }
         }
-      }
+
+        stage('Install Dependencies') {
+            steps {
+                // Install Node.js dependencies
+                script {
+                    sh 'npm install'
+                }
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                script {
+                    // Construct the command to run Playwright tests
+                    def testCommand = "npx playwright test"
+
+                    // Append browser option if selected
+                    if (params.BROWSER) {
+                        testCommand += " --project=${params.BROWSER}"
+                    }
+
+                    // Append test file if specified
+                    if (params.TEST_FILE) {
+                        testCommand += " ${params.TEST_FILE}"
+                    }
+                     if (params.tag) {
+                        testCommand += "--g  '${params.tag}'"
+                    }
+                    // Execute the test command
+                    sh testCommand
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Archive test results and reports
+            junit '**/test-results/*.xml'
+            archiveArtifacts artifacts: '**/test-results/**/*', allowEmptyArchive: true
+        }
+    }
 }
